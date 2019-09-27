@@ -6,12 +6,12 @@ require('./db/mongoose');
 const app = express();
 const bodyParser = require('body-parser');
 const passport = require('passport')
-const LocalStrategy = require('passport-local')
+const LocalStrategy = require('passport-local').Strategy
 const passportLocalMongoose = require('passport-local-mongoose');
 const User = require('./models/user');
 
 
-const port = process.env.PORT || 3000
+const port = process.env.PORT 
 
 dotenv.config();
 
@@ -20,13 +20,12 @@ dotenv.config();
 // app and authentication configuration
 
 app.set('view engine', 'ejs');
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(require('express-session')({
     secret:"this is the kymopoleia app",
     resave:false,
-    saveUninitialized:false
+    saveUninitialized:true
 }));
-app.set("view engine", "ejs");
-app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.static(__dirname + "/public"))
 
 app.use(passport.initialize());
@@ -34,12 +33,50 @@ app.use(passport.session())
 
 // passport configuration
 
-passport.use(new LocalStrategy(
-   User.authenticate()
-  ));
-passport.serializeUser(User.serializeUser());
+// passport.serializeUser(function(user, done) {
+//     done(null, user._id);
+// });
 
-passport.deserializeUser(User.deserializeUser());
+// passport.deserializeUser(function(id, done) {
+//     User.findById(id, function (err, user) {
+//       done(err, user);
+//     });
+// });
+
+// passport.use(new LocalStrategy(function(username, password, done) {
+//     User.findOne({
+//         username: username
+//     }, function(err, user) {
+//         // This is how you handle error
+//         if (err) return done(err);
+//         // When user is not found
+//         if (!user) return done(null, false);
+//         // When password is not correct
+//         if (!user.authenticate(password)) return done(null, false);
+//         // When all things are good, we return the user
+//         return done(null, user);
+//      });
+// }));
+ 
+
+// passport.use(new LocalStrategy(
+//     function(username, password, done) {
+//       User.findOne({ username: username }, function (err, user) {
+//         if (err) { return done(err); }
+//         if (!user) { return done(null, false); }
+//         user.comparePassword(password, user.password, function (err, isMatch) {
+//           if (err) { return done(err); }
+//           if (!isMatch) { return done(null, false); }
+//           return done(null, user);
+//         });
+//       });
+//     }
+//   ));
+
+// /plugins from passportlocalmongoose in user.js file
+passport.use(new LocalStrategy(User.authenticate())); //creating new local strategy with user authenticate from passport-local-mongoose
+passport.serializeUser(User.serializeUser()); //responsible for encoding it, serializing data and putting it back into session
+passport.deserializeUser(User.deserializeUser()); //responsible for reading session, taking data from session that is encoded and unencoding it
 
 // authentication routes
 app.get("/", (req, res) => {
@@ -73,16 +110,15 @@ app.post('/signup',(req,res)=>{
         
         }
         passport.authenticate('local')(req,res,function(){
-            res.redirect('/app.slack.com/client/TNNH51BC5/CNNH51UDT/')
+            res.redirect('https://app.slack.com/client/TNNH51BC5/CNNH51UDT/')
         })
     })
 })
-app.post('/login',passport.authenticate("local",{
-    successRedirect:'https://app.slack.com/client/TNNH51BC5/CNNH51UDT/',
-    failureRedirect:'/login'
-}),(req,res)=>{
-   
-});
+app.post('/login', 
+  passport.authenticate('local', { failureRedirect: '/login' }),
+  function(req, res) {
+    res.redirect('https://app.slack.com/client/TNNH51BC5/CNNH51UDT/');
+  });
 
 
 app.listen(port, () => {

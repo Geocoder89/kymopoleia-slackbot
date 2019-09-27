@@ -3,7 +3,7 @@ OAuth Access Token:xoxp-770583045413-764162302145-770589741029-e75e2481c360230c3
 Bot User OAuth Access Token:xoxb-770583045413-772793908134-qLSic0njny8lDHUv2JSbKSXV
 
 
-559530634160-ae5d093j135683cj8ml4cu765rrend5u.apps.googleusercontent.com
+client id 559530634160-ae5d093j135683cj8ml4cu765rrend5u.apps.googleusercontent.com
 
--LuXN5INHbYEEEfQRa7kRxRz
+client secret -LuXN5INHbYEEEfQRa7kRxRz
 

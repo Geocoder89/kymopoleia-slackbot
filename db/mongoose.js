@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 
-mongoose.connect ('mongodb://localhost:27017/slacker',{
+mongoose.connect (process.env.MONGODB_URL,{
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify:false,

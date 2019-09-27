@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon app.js"
+    "start": "node app.js",
+    "dev":"env-cmd -f ./config/dev.env nodemon app.js"
   },
   "author": "Oladele Omoarukhe",
   "license": "ISC",
@@ -16,12 +17,15 @@
     "ejs": "^2.7.1",
     "express": "^4.17.1",
     "express-session": "^1.16.2",
-    "googleapis": "^39.2.0",
     "mongoose": "^5.7.1",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^5.0.1",
     "request": "^2.88.0",
     "slackbots": "^1.2.0"
+  },
+  "devDependencies": {
+    "env-cmd": "^10.0.1",
+    "nodemon": "^1.19.2"
   }
 }
