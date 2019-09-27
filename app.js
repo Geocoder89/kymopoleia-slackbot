@@ -11,9 +11,13 @@ const passportLocalMongoose = require('passport-local-mongoose');
 const User = require('./models/user');
 
 
-const port = process.env.PORT 
+const port = process.env.PORT || 3000
 
-dotenv.config();
+
+
+
+
+// dotenv.config();
 
 
 
@@ -33,45 +37,9 @@ app.use(passport.session())
 
 // passport configuration
 
-// passport.serializeUser(function(user, done) {
-//     done(null, user._id);
-// });
 
-// passport.deserializeUser(function(id, done) {
-//     User.findById(id, function (err, user) {
-//       done(err, user);
-//     });
-// });
 
-// passport.use(new LocalStrategy(function(username, password, done) {
-//     User.findOne({
-//         username: username
-//     }, function(err, user) {
-//         // This is how you handle error
-//         if (err) return done(err);
-//         // When user is not found
-//         if (!user) return done(null, false);
-//         // When password is not correct
-//         if (!user.authenticate(password)) return done(null, false);
-//         // When all things are good, we return the user
-//         return done(null, user);
-//      });
-// }));
- 
 
-// passport.use(new LocalStrategy(
-//     function(username, password, done) {
-//       User.findOne({ username: username }, function (err, user) {
-//         if (err) { return done(err); }
-//         if (!user) { return done(null, false); }
-//         user.comparePassword(password, user.password, function (err, isMatch) {
-//           if (err) { return done(err); }
-//           if (!isMatch) { return done(null, false); }
-//           return done(null, user);
-//         });
-//       });
-//     }
-//   ));
 
 // /plugins from passportlocalmongoose in user.js file
 passport.use(new LocalStrategy(User.authenticate())); //creating new local strategy with user authenticate from passport-local-mongoose
@@ -119,13 +87,7 @@ app.post('/login',
   function(req, res) {
     res.redirect('https://app.slack.com/client/TNNH51BC5/CNNH51UDT/');
   });
-
-
-app.listen(port, () => {
-    console.log('Server is up on port ' + port);
-});
-
-
+// BOT BEHAVIOUR
 
 // bot interaction configuration
 const bot = new Slackbot({
@@ -179,9 +141,6 @@ function handleMessage(message) {
         sendGreeting();
     }
 
-    if (message.includes(' note')) {
-        notes();
-    }
 }
 
 //function designed to send a greeting 
@@ -205,14 +164,10 @@ function getGreeting() {
     return greetings[Math.floor(Math.random() * greetings.length)]
 }
 
-function notes() {
-    axios.get('https://www.slashnotes.com/').then(res => {
-        const note = res.data.value.notes;
 
-        const params = {
-            icon_emoji: ':laughing:'
-        };
+app.listen(port, () => {
+    console.log('Server is up on port ' + port);
+});
 
-        bot.postMessageToChannel('general', `save notes: ${note}`, params);
-    });
-}
+
+
