@@ -1,5 +1,5 @@
 const Slackbot = require('slackbots');
-const axios = require('axios');
+const request =  require('request');
 const dotenv = require('dotenv');
 const express = require('express');
 require('./db/mongoose');
@@ -14,6 +14,7 @@ const User = require('./models/user');
 const port = process.env.PORT || 3000
 
 
+  
 
 
 
@@ -108,7 +109,7 @@ bot.on('start', () => {
 
     // bot.postMessageToUser('Mercy Inyang', 'Hey there,i am slackbot,it is nice to meet you', params)
 
-    bot.postMessageToGroup('random-gist', 'Hello World!', params)
+    // bot.postMessageToGroup('test', 'Hello World!', params)
 
 })
 
@@ -126,6 +127,7 @@ bot.on('message', (data) => {
     if (data.type !== "message") {
         return;
     }
+    
 
     // this handles the particular message we want to deliver back
 
@@ -140,7 +142,9 @@ function handleMessage(message) {
     if (message.includes(greeterA)) {
         sendGreeting();
     }
-
+    if(message.includes(' notes')){
+        getNotes();
+    }
 }
 
 //function designed to send a greeting 
@@ -162,6 +166,19 @@ function getGreeting() {
     ];
 
     return greetings[Math.floor(Math.random() * greetings.length)]
+}
+
+var getNotes = (cb,user)=>{
+    return request('https://evernotestefan-skliarovv1.p.rapidapi.com/getNote',(error,response)=>{
+        if(error){
+            console.log("Error: ",error)
+        } else{
+            let notesJSON = JSON.parse(response.body)
+            let notes= notesJSON.text;
+            return callback(notes,user)
+        }
+        console.log(notes);
+    })     
 }
 
 
