@@ -1,14 +1,11 @@
 const Slackbot = require('slackbots');
 const request =  require('request');
 const dotenv = require('dotenv');
+const fs = require('fs');
+const readline = require('readline');
+const {google} = require('googleapis');;
 const express = require('express');
-require('./db/mongoose');
 const app = express();
-const bodyParser = require('body-parser');
-const passport = require('passport')
-const LocalStrategy = require('passport-local').Strategy
-const passportLocalMongoose = require('passport-local-mongoose');
-const User = require('./models/user');
 
 
 const port = process.env.PORT || 3000
@@ -19,82 +16,56 @@ const port = process.env.PORT || 3000
 
 
 
-// dotenv.config();
+dotenv.config();
 
 
+// google drive api
+async function uploadFile(bucketName, filename) {
+    // [START storage_upload_file]
+    // Imports the Google Cloud client library
+    const {Storage} = require('@google-cloud/storage');
+  
+    // Creates a client
+    const storage = new Storage();
+  
+    const bucketName = 'kymoslack';
+    const filename = '/home/Codes/slackbot-project/kymobot.json';
 
-// app and authentication configuration
+  
+    // Uploads a local file to the bucket
+    await storage.bucket(bucketName).upload(filename, {
+      // Support for HTTP requests made with `Accept-Encoding: gzip`
+      gzip: true,
+      // By setting the option `destination`, you can change the name of the
+      // object you are uploading to a bucket.
+      metadata: {
+        // Enable long-lived HTTP caching headers
+        // Use only if the contents of the file will never change
+        // (If the contents will change, use cacheControl: 'no-cache')
+        cacheControl: 'public, max-age=31536000',
+      },
+    });
+  
+    console.log(`${filename} uploaded to ${bucketName}.`);
+    // [END storage_upload_file]
+  }
 
-app.set('view engine', 'ejs');
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(require('express-session')({
-    secret:"this is the kymopoleia app",
-    resave:false,
-    saveUninitialized:true
-}));
-app.use(express.static(__dirname + "/public"))
 
-app.use(passport.initialize());
-app.use(passport.session())
-
-// passport configuration
-
-
-
-
-
-// /plugins from passportlocalmongoose in user.js file
-passport.use(new LocalStrategy(User.authenticate())); //creating new local strategy with user authenticate from passport-local-mongoose
-passport.serializeUser(User.serializeUser()); //responsible for encoding it, serializing data and putting it back into session
-passport.deserializeUser(User.deserializeUser()); //responsible for reading session, taking data from session that is encoded and unencoding it
-
-// authentication routes
-app.get("/", (req, res) => {
-    res.render('index');
-})
-
-// this shows the login form
-app.get('/login', (req, res) => {
-    res.render('login');
-})
-
-// this shows the signup form
-app.get('/signup', (req, res) => {
-    res.render('signup');
-});
-
-// this handles the signup logic
-
-app.post('/signup',(req,res)=>{
-    req.body.username
-    req.body.email
-    req.body.password
-
-    User.register(new User({
-        username:req.body.username,
-        email:req.body.email
-    }),req.body.password,function(err,user){
-        if(err){
-            console.log(err)
-            return res.render('signup');
-        
-        }
-        passport.authenticate('local')(req,res,function(){
-            res.redirect('https://app.slack.com/client/TNNH51BC5/CNNH51UDT/')
-        })
-    })
-})
-app.post('/login', 
-  passport.authenticate('local', { failureRedirect: '/login' }),
-  function(req, res) {
-    res.redirect('https://app.slack.com/client/TNNH51BC5/CNNH51UDT/');
-  });
+  require(`yargs`)
+  .demand(1)
+  .command(
+    `upload <bucketName> <srcFileName>`,
+    `Uploads a local file to a bucket.`,
+    {},
+    opts => uploadFile(opts.bucketName, opts.srcFileName)
+  )
+  
 // BOT BEHAVIOUR
 
 // bot interaction configuration
 const bot = new Slackbot({
     token: `${process.env.BOT_TOKEN}`,
-    name: 'slack-chatbot'
+    name: 'kymobot'
 })
 
 bot.on('start', () => {
@@ -104,13 +75,9 @@ bot.on('start', () => {
 
     bot.postMessageToChannel(
         'general',
-        'Hi,i am slack-chatbot, how may i be of help?',
+        'Hi,i am kymobot, how may i be of help or save your notes?',
         params
     );
-
-    // bot.postMessageToUser('Mercy Inyang', 'Hey there,i am slackbot,it is nice to meet you', params)
-
-    // bot.postMessageToGroup('test', 'Hello World!', params)
 
 })
 
@@ -137,15 +104,49 @@ bot.on('message', (data) => {
 
 // Slackbot response handler
 
-function handleMessage(message) {
-    const greeterA = 'Hello'
+function handleMessage(message){
 
-    if (message.includes(greeterA)) {
+    if (message.includes(' hello')) {
         sendGreeting();
     }
-    if(message.includes(' notes')){
-        getNotes();
+    if(message.includes(' kymosave')){
+       kymoSaver();
     }
+    if(message.includes(' kymohelp')){
+        kymoHelp();
+    }
+}
+
+function kymoSaver(){
+    request(`https://slack.com/api/conversations.history?token=${process.env.SLACK_AUTH_LEGACY_TOKEN}&channel=${process.env.CHANNEL}&pretty=1`,(err,res,body)=>{
+
+        fs.writeFile('kymobot.json',body,(err)=>{
+            if(err)
+                console.log(err)
+        
+                const params = {
+                    icon_emoji: ':carlton:'
+                  }
+            bot.postMessageToChannel(
+                'kymopoleia',
+                "Your note has been saved",params
+            );
+            console.log('note has been saved')
+        });
+      
+    });
+    
+}
+
+function kymoHelp(){
+    const params ={
+        icon_emoji: ":thinking:"
+    }
+    bot.postMessageToChannel(
+        'general',
+        "Type `kymosave` to save channel conversation",
+        params
+    )
 }
 
 //function designed to send a greeting 
@@ -167,19 +168,6 @@ function getGreeting() {
     ];
 
     return greetings[Math.floor(Math.random() * greetings.length)]
-}
-
-var getNotes = (cb,user)=>{
-    return request('https://evernotestefan-skliarovv1.p.rapidapi.com/getNote',(error,response)=>{
-        if(error){
-            console.log("Error: ",error)
-        } else{
-            let notesJSON = JSON.parse(response.body)
-            let notes= notesJSON.text;
-            return callback(notes,user)
-        }
-        console.log(notes);
-    })     
 }
 
 
