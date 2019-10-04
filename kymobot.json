@@ -2,6 +2,95 @@
     "ok": true,
     "messages": [
         {
+            "type": "message",
+            "subtype": "bot_message",
+            "text": "Your note has been saved",
+            "ts": "1570185912.001000",
+            "username": "kymobot",
+            "icons": {
+                "emoji": ":carlton:"
+            },
+            "bot_id": "BNWPMJ747"
+        },
+        {
+            "client_msg_id": "c50ee982-0b81-4194-9f93-b2cf7d4966ac",
+            "type": "message",
+            "text": "<@UNG50JX34> kymosave",
+            "user": "UNG4S8W49",
+            "ts": "1570185912.000900",
+            "team": "TNNH51BC5"
+        },
+        {
+            "client_msg_id": "020c2441-06fd-402a-ac89-c053cb2f0703",
+            "type": "message",
+            "text": "<@UNG50JX34> tell me a joke",
+            "user": "UNG4S8W49",
+            "ts": "1570185897.000600",
+            "team": "TNNH51BC5"
+        },
+        {
+            "client_msg_id": "65566ab8-4557-4255-a1d1-467710520074",
+            "type": "message",
+            "text": "<@UNG50JX34> tell me a joke",
+            "user": "UNG4S8W49",
+            "ts": "1570185834.000400",
+            "team": "TNNH51BC5"
+        },
+        {
+            "client_msg_id": "ab5162d6-6284-414a-9db2-06d913b65c4e",
+            "type": "message",
+            "text": "<@UNG50JX34> tell me a joke",
+            "user": "UNG4S8W49",
+            "ts": "1570185811.000200",
+            "team": "TNNH51BC5"
+        },
+        {
+            "client_msg_id": "fbcd08e3-9eea-4acb-ad17-a98171a3e647",
+            "type": "message",
+            "text": "<@UNG50JX34> tell me a joke",
+            "user": "UNG4S8W49",
+            "ts": "1570108328.001000",
+            "team": "TNNH51BC5"
+        },
+        {
+            "client_msg_id": "2b563b33-666e-484b-a808-55069142afbc",
+            "type": "message",
+            "text": "@kymn",
+            "user": "UNG4S8W49",
+            "ts": "1570108319.000600",
+            "team": "TNNH51BC5"
+        },
+        {
+            "type": "message",
+            "subtype": "bot_message",
+            "text": "Your note has been saved",
+            "ts": "1570106633.000400",
+            "username": "kymobot",
+            "icons": {
+                "emoji": ":carlton:"
+            },
+            "bot_id": "BNWPMJ747"
+        },
+        {
+            "client_msg_id": "9f3b9100-b659-4aa5-a8be-eb360fa9aee2",
+            "type": "message",
+            "text": "<@UNG50JX34> kymosave",
+            "user": "UNG4S8W49",
+            "ts": "1570106632.000300",
+            "team": "TNNH51BC5"
+        },
+        {
+            "type": "message",
+            "subtype": "bot_message",
+            "text": "Your note has been saved",
+            "ts": "1569768007.012700",
+            "username": "kymobot",
+            "icons": {
+                "emoji": ":carlton:"
+            },
+            "bot_id": "BNWPMJ747"
+        },
+        {
             "client_msg_id": "51d92839-e836-4011-a58d-4e5146e7bf0a",
             "type": "message",
             "text": "<@UNG50JX34> kymosave hello world",
@@ -555,5 +644,7 @@
         }
     ],
     "has_more": false,
-    "pin_count": 0
+    "pin_count": 0,
+    "channel_actions_ts": null,
+    "channel_actions_count": 0
 }

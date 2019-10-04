@@ -5,6 +5,7 @@ const fs = require('fs');
 const readline = require('readline');
 const {google} = require('googleapis');;
 const express = require('express');
+const axios = require('axios');
 const app = express();
 
 
@@ -83,6 +84,8 @@ bot.on('start', () => {
 
 
 
+
+
 // Slackbot error handler
 
 bot.on('error', (err) => {
@@ -100,21 +103,26 @@ bot.on('message', (data) => {
     // this handles the particular message we want to deliver back
 
     handleMessage(data.text);
+
+    
 })
 
 // Slackbot response handler
 
 function handleMessage(message){
 
-    if (message.includes(' hello')) {
+    if(message.includes('hello')) {
         sendGreeting();
-    }
-    if(message.includes(' kymosave')){
+    }else if(message.includes(' kymosave')){
        kymoSaver();
-    }
-    if(message.includes(' kymohelp')){
+    }else if(message.includes(' kymohelp')){
         kymoHelp();
     }
+    else 
+    if(message.includes(' random joke')) {
+        randomJoke()
+    } 
+    
 }
 
 function kymoSaver(){
@@ -170,6 +178,27 @@ function getGreeting() {
     return greetings[Math.floor(Math.random() * greetings.length)]
 }
 
+
+
+// to make the bot generate a random joke
+
+function randomJoke() {
+    axios.get('https://api.chucknorris.io/jokes/random?science={science}')
+      .then(res => {
+            const joke = res.data.value;
+
+            const params = {
+                icon_emoji: ':smile:'
+            }
+        
+            bot.postMessageToChannel(
+                'general',
+                `:zap: ${joke}`,
+                params
+            );
+
+      })
+}
 
 app.listen(port, () => {
     console.log('Server is up on port ' + port);

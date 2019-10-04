@@ -6,12 +6,13 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js",
-    "dev": "env-cmd -f ./config/dev.env nodemon app.js"
+    "dev": "env-cmd -f ./config/.env nodemon app.js"
   },
   "author": "Oladele Omoarukhe",
   "license": "ISC",
   "dependencies": {
     "@google-cloud/storage": "^3.3.0",
+    "axios": "^0.19.0",
     "dotenv": "^8.1.0",
     "express": "^4.17.1",
     "googleapis": "^39.2.0",
