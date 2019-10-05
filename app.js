@@ -121,10 +121,15 @@ function handleMessage(message){
     else 
     if(message.includes(' random joke')) {
         randomJoke()
-    } 
+    } else if (message.includes(' kymoterms')){
+        kymoTerms();
+    }
     
 }
 
+// bot behaviour functions
+
+// function that saves a channel history's conversation into an external drive.
 function kymoSaver(){
     request(`https://slack.com/api/conversations.history?token=${process.env.SLACK_AUTH_LEGACY_TOKEN}&channel=${process.env.CHANNEL}&pretty=1`,(err,res,body)=>{
 
@@ -146,6 +151,8 @@ function kymoSaver(){
     
 }
 
+// function designed to help user to find needed help
+
 function kymoHelp(){
     const params ={
         icon_emoji: ":thinking:"
@@ -165,6 +172,21 @@ function sendGreeting() {
 
 
 }
+
+//function designed to describe terms and conditions used for the slackbot 
+function kymoTerms(){
+    const params ={
+        icon_emoji: ":thinking:"
+    } 
+
+    bot.postMessageToChannel(
+        'general',
+        "Kymopoleia Privacy Policy & Terms of Service.We request permissions only to:Save your conversations in an external drive.Send messages to you privately in Slack that only you can see regarding errors or other state messages.We won't:Use emails we have access to in your workspace for any purpose other than scheduling messages as expected View any of your messages. Your messages are stored in the external drive for easy access in the future Store any personal information on our database regarding names, emails or other personal information aside from information needed to carry out service expected. That includes Slack User ID if that user has granted the app permission",
+        params
+    )
+}
+
+// function used to get needed greeting 
 
 function getGreeting() {
     const greetings = [
@@ -200,6 +222,7 @@ function randomJoke() {
       })
 }
 
+// server configuration
 app.listen(port, () => {
     console.log('Server is up on port ' + port);
 });
